@@ -1,0 +1,21 @@
+{
+  "name": "jjbg",
+  "authors": [
+    "jj <nnaasss_2007@126.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "vendor/bower",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "uploadify": "^3.2.1"
+  }
+}
