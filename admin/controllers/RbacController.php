@@ -6,6 +6,7 @@
  */
 namespace app\admin\controllers;
 
+use app\admin\models\Config;
 use app\admin\models\Rbac;
 use app\core\functions;
 use yii\db\Exception;
@@ -15,6 +16,13 @@ use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
 class RbacController extends CommonController
 {
+    public static $config;
+
+    public function init()
+    {
+        self::$config = Config::getConfig();
+    }
+
     public function behaviors()
     {
         return [
@@ -23,7 +31,7 @@ class RbacController extends CommonController
                 'user'  => 'admin',
                 'rules' => [
                     [
-                        'actions'   => ['assign-item','roles','create-role','route'],
+                        'actions'   => ['assign-item','roles','create-role','route','delete-role'],
                         'allow'     => true,
                         'roles'     => ['@'],
                     ]
@@ -32,7 +40,7 @@ class RbacController extends CommonController
             'verbs'     => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete'    => ['post']
+                    'delete-role'    => ['post']
                 ]
             ]
         ];
@@ -133,7 +141,7 @@ class RbacController extends CommonController
                     ->where(['type' => '2'])
                     ->orderBy('created_at desc'),
 
-            'pagination' => ['pageSize' => \Yii::$app->params['defaultRows']]
+            'pagination' => ['pageSize' => self::$config['default_rows']]
         ]);
 
         return $this->render('route',[
@@ -154,7 +162,7 @@ class RbacController extends CommonController
                         ->from($auth->itemTable)
                         ->where(['type' => '1'])
                         ->orderBy('created_at desc'),
-            'pagination' => ['pageSize' => \Yii::$app->params['defaultRows']]
+            'pagination' => ['pageSize' => self::$config['default_rows']]
         ]);
         return $this->render('roles',[
             'dataProvider'  => $data
@@ -187,4 +195,21 @@ class RbacController extends CommonController
         }
         return $this->render('_createitem');
     }
+
+    /**
+     * 删除角色
+     */
+    public function actionDeleteRole()
+    {
+        $name = $this->requestParams('get','name');
+        $auth = \Yii::$app->authManager;
+        $role = $auth->getRole($name);
+        $res  = $auth->remove($role);
+        if( $res ){
+            $this->Success('删除成功!',['rbac/roles']);
+        }else{
+            $this->Error('删除失败!',['rbac/roles']);
+        }
+    }
+
 }

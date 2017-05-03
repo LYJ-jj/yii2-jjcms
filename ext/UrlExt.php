@@ -29,7 +29,7 @@ class UrlExt
     {
         $user  = $user === null ? Yii::$app->admin : $user;
         $url   = self::normalizeUrl($url);
-
+//        return $url;
         if( $user->can( $url ) ){
             return true;
         }

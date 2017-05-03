@@ -8,7 +8,7 @@ $this->title = '欢迎登录';
         <div class="sign-in-inner">
 
             <div class="login-brand text-center">
-                jj <strong class="text-skin">Basic</strong>
+                jj <strong class="text-skin">CMS</strong>
             </div>
 
             <?php $form = ActiveForm::begin(['id' => 'form-login']) ?>

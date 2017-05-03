@@ -1,192 +1,104 @@
-Yii 2 Basic Project Template
+基于yii2框架搭建的 通用后台管理系统-jjcms
 ============================
 
-Yii 2 Basic Project Template is a skeleton [Yii 2](http://www.yiiframework.com/) application best for
-rapidly creating small projects.
-
-The template contains the basic features including user login/logout and a contact page.
-It includes all commonly used configurations that would allow you to focus on adding new
-features to your application.
-
-[![Latest Stable Version](https://poser.pugx.org/yiisoft/yii2-app-basic/v/stable.png)](https://packagist.org/packages/yiisoft/yii2-app-basic)
-[![Total Downloads](https://poser.pugx.org/yiisoft/yii2-app-basic/downloads.png)](https://packagist.org/packages/yiisoft/yii2-app-basic)
-[![Build Status](https://travis-ci.org/yiisoft/yii2-app-basic.svg?branch=master)](https://travis-ci.org/yiisoft/yii2-app-basic)
-
-DIRECTORY STRUCTURE
+功能模块
 -------------------
+1.登录与注册 
+2.密码找回
+3.基于RBAC角色管理
+4.菜单管理
+5.数据表管理
+6.网站配置
+7.系统常规信息
 
-      assets/             contains assets definition
-      commands/           contains console commands (controllers)
-      config/             contains application configurations
-      controllers/        contains Web controller classes
-      mail/               contains view files for e-mails
-      models/             contains model classes
-      runtime/            contains files generated during runtime
-      tests/              contains various tests for the basic application
-      vendor/             contains dependent 3rd-party packages
-      views/              contains view files for the Web application
-      web/                contains the entry script and Web resources
+目录结构
+-------------------
+      admin/              后台访问模块
+      assets/             静态资源管理文件夹
+      commands/           yii2命令模式文件夹
+      config/             配置文件
+      controllers/        控制器文件夹
+      core/               核心工具类
+      ext/                基于yii2相关组件扩展的工具类
+      mail/               邮件模板
+      message/            多语言翻译
+      models/             数据模型
+      sql/                数据表结构sql文件
+      tests/              测试
+      vendor/             插件库
+      views/              视图
+      web/                web
 
 
 
-REQUIREMENTS
+特点
+------------
+适用于作为中小型项目的后台，为开发人员提供了常用的功能模块，使得开发人员可以更加专注于其自身业务逻辑的实现当中。
+与此同时，还提供了一些封装好的工具类及方法，亦可自己重写，具有较好的灵活性。
+
+安装使用方法
 ------------
 
-The minimum requirement by this project template that your Web server supports PHP 5.4.0.
-
-
-INSTALLATION
-------------
-
-### Install via Composer
-
-If you do not have [Composer](http://getcomposer.org/), you may install it by following the instructions
-at [getcomposer.org](http://getcomposer.org/doc/00-intro.md#installation-nix).
-
-You can then install this project template using the following command:
-
+###1.使用git克隆或下载源码
 ~~~
-php composer.phar global require "fxp/composer-asset-plugin:^1.2.0"
-php composer.phar create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
+git clone https://github.com/LYJ-jj/yii2-jjcms.git
 ~~~
-
-Now you should be able to access the application through the following URL, assuming `basic` is the directory
-directly under the Web root.
-
+###2.更新并下载composer.json文件
 ~~~
-http://localhost/basic/web/
+php composer.phar update
 ~~~
+!!! 如果您的电脑尚未安装composer，请前往官网下载并安装使用。
 
+composer官网： http://docs.phpcomposer.com/
 
-### Install from an Archive File
+###3.使用bower下载bower.json中所注明的相关插件
+###(此步骤建议执行，跳过亦可,暂不影响使用)
+!!! 如果您还没有安装bower，请前往官网进行下载安装。
 
-Extract the archive file downloaded from [yiiframework.com](http://www.yiiframework.com/download/) to
-a directory named `basic` that is directly under the Web root.
-
-Set cookie validation key in `config/web.php` file to some random secret string:
-
-```php
-'request' => [
-    // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
-    'cookieValidationKey' => '<secret random string goes here>',
-],
-```
-
-You can then access the application through the following URL:
-
+bower官网：https://bower.io/
 ~~~
-http://localhost/basic/web/
+bower install
 ~~~
+###4.新建数据库及数据表(相关文件在sql文件夹中)。
+###5.打开config/db.php，修改相关配置。
+###6.完成。
 
-
-CONFIGURATION
+开始访问
 -------------
+路由规程为：http://host.com/[\<module>/]\<controller>/\<action>
 
-### Database
+例如:
 
-Edit the file `config/db.php` with real data, for example:
+http://www.localhost.com/site/index(前台首页)
+ 
+http://www.localhost.com/admin/site/index(后台首页)
 
-```php
-return [
-    'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=localhost;dbname=yii2basic',
-    'username' => 'root',
-    'password' => '1234',
-    'charset' => 'utf8',
-];
-```
-
-**NOTES:**
-- Yii won't create the database for you, this has to be done manually before you can access it.
-- Check and edit the other files in the `config/` directory to customize your application as required.
-- Refer to the README in the `tests` directory for information specific to basic application tests.
-
-
-
-TESTING
+Apache虚拟主机配置参数
 -------
+~~~
+<VirtualHost *:80>
+    ServerName host
+    DocumentRoot path
+    <Directory "path">
+        RewriteEngine on 
+        RewriteCond %{REQUEST_FILENAME} !-f
+        RewriteCond %{REQUEST_FILENAME} !-d
+        RewriteRule . index.php
+        DirectoryIndex index.php index.html
+        Options Indexes FollowSymLinks
+        AllowOverride All
+        Order allow,deny
+        Allow from all
+    </Directory>
+</VirtualHost>
+~~~
 
-Tests are located in `tests` directory. They are developed with [Codeception PHP Testing Framework](http://codeception.com/).
-By default there are 3 test suites:
+问题反馈
+--------
+作者邮箱： 598571948@qq.com
 
-- `unit`
-- `functional`
-- `acceptance`
+当前版本
+--------
+v1.0
+    
 
-Tests can be executed by running
-
-```
-vendor/bin/codecept run
-``` 
-
-The command above will execute unit and functional tests. Unit tests are testing the system components, while functional
-tests are for testing user interaction. Acceptance tests are disabled by default as they require additional setup since
-they perform testing in real browser. 
-
-
-### Running  acceptance tests
-
-To execute acceptance tests do the following:  
-
-1. Rename `tests/acceptance.suite.yml.example` to `tests/acceptance.suite.yml` to enable suite configuration
-
-2. Replace `codeception/base` package in `composer.json` with `codeception/codeception` to install full featured
-   version of Codeception
-
-3. Update dependencies with Composer 
-
-    ```
-    composer update  
-    ```
-
-4. Download [Selenium Server](http://www.seleniumhq.org/download/) and launch it:
-
-    ```
-    java -jar ~/selenium-server-standalone-x.xx.x.jar
-    ``` 
-
-5. (Optional) Create `yii2_basic_tests` database and update it by applying migrations if you have them.
-
-   ```
-   tests/bin/yii migrate
-   ```
-
-   The database configuration can be found at `config/test_db.php`.
-
-
-6. Start web server:
-
-    ```
-    tests/bin/yii serve
-    ```
-
-7. Now you can run all available tests
-
-   ```
-   # run all available tests
-   vendor/bin/codecept run
-
-   # run acceptance tests
-   vendor/bin/codecept run acceptance
-
-   # run only unit and functional tests
-   vendor/bin/codecept run unit,functional
-   ```
-
-### Code coverage support
-
-By default, code coverage is disabled in `codeception.yml` configuration file, you should uncomment needed rows to be able
-to collect code coverage. You can run your tests and collect coverage with the following command:
-
-```
-#collect coverage for all tests
-vendor/bin/codecept run -- --coverage-html --coverage-xml
-
-#collect coverage only for unit tests
-vendor/bin/codecept run unit -- --coverage-html --coverage-xml
-
-#collect coverage for unit and functional tests
-vendor/bin/codecept run functional,unit -- --coverage-html --coverage-xml
-```
-
-You can see code coverage output under the `tests/_output` directory.

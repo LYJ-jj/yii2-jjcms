@@ -42,16 +42,16 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header'=> '操作',
-                'template' => '{assign} {update} {delete}',
+                'template' => '{assign} {delete}',
                 'buttons'  => [
                     'assign'  => function($url,$model,$key){
                         return HtmlExt::a('分配权限',['assign-item','name' => $model['name']],['class' => 'btn btn-xs btn-primary']);
                     },
-                    'update'  => function($url,$model,$key){
-                        return HtmlExt::a('更新',['update-role','name' => $model['name']],['class' => 'btn btn-xs btn-info']);
-                    },
                     'delete'  => function($url,$model,$key){
-                        return HtmlExt::a('删除',['delete-role','name' => $model['name']],['class' => 'btn btn-xs btn-danger']);
+                        return HtmlExt::a('删除',['delete-role','name' => $model['name']],['class' => 'btn btn-xs btn-danger','data' => [
+                                'confirm' => '您确定要删除该角色吗？',
+                                'method'  => 'post'
+                        ]]);
                     }
                 ]
             ]

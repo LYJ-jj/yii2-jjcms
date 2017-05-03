@@ -12,7 +12,7 @@ AdminAsset::addScript($this,\Yii::$app->params['__static__adminJs__'].'/moderniz
     <div class="sign-in-wrapper">
         <div class="sign-in-inner">
             <div class="login-brand text-center">
-                jj <strong class="text-skin">Basic</strong>
+                jj <strong class="text-skin">CMS</strong>
             </div>
 
             <?php $form = ActiveForm::begin(['id' => 'form-signup']) ?>

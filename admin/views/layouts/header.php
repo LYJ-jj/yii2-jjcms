@@ -13,7 +13,6 @@ $config = \app\admin\models\Config::getConfig();
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-
             <a href="<?= \yii\helpers\Url::to(['site/index']) ?>" class="brand">
                 <span class="brand-name"><?= $config['web_alias'] ?></span>
             </a>
@@ -24,6 +23,7 @@ $config = \app\admin\models\Config::getConfig();
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
+
             <ul class="nav-notification">
                 <li class="search-list">
                     <div class="search-input-wrapper">
@@ -31,9 +31,14 @@ $config = \app\admin\models\Config::getConfig();
                             <input type="text" class="form-control input-sm inline-block">
                             <a href="#" class="input-icon text-normal"><i class="ion-ios7-search-strong"></i></a>
                         </div>
+
+                        <div class="search-input">
+                            <a href="<?= Yii::$app->request->referrer; ?>"><span class="glyphicon glyphicon-arrow-left"></span>BACK</a>
+                        </div>
                     </div>
                 </li>
             </ul>
+
             <div class="pull-right m-right-sm">
                 <div class="user-block hidden-xs">
                     <a href="#" id="userToggle" data-toggle="dropdown">

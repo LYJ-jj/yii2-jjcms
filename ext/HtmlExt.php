@@ -15,5 +15,6 @@ class HtmlExt extends Html
         if( UrlExt::checkUrlRule($url) ){
             return parent::a($text, $url, $options);
         }
+//        return UrlExt::checkUrlRule($url);
     }
 }

@@ -11,6 +11,7 @@ use yii\grid\GridView;
 
 $this->title = '后台用户';
 $this->params['breadcrumbs'][] = $this->title;
+$config = \app\admin\models\Config::getConfig();
 ?>
 <div class="admin-index">
 
@@ -18,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?php if(\Yii::$app->params['admin_isAllowSignUp']): ?>
+        <?php if($config['admin_is_allow_register']): ?>
             <?= HtmlExt::a('注册用户', ['create'], ['class' => 'btn btn-success']) ?>
         <?php endif; ?>
     </p>
