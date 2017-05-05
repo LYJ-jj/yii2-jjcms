@@ -5,8 +5,22 @@
 namespace app\admin\models;
 use yii\db\ActiveRecord;
 use yii\web\NotFoundHttpException;
+use yii\behaviors\BlameableBehavior;
+use Yii;
 class Attribute extends ActiveRecord
 {
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => BlameableBehavior::className(),
+                'createdByAttribute' => 'author_id',
+                'updatedByAttribute' => null,
+                'value' => Yii::$app->admin->id
+            ],
+        ];
+    }
+
     public static function tableName()
     {
         return "{{%attribute}}";

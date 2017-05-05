@@ -12,5 +12,4 @@ return [
     'rbac_exceptAction'      => ['s','login','signup'],                 # 路由扫描时，忽略扫描的方法名称
     'defaultCacheExpire'     => 120,                                    # 缓存失效时间
     'defaultFace'            => 'static/admin/img/profile/profile1.jpg',# 默认头像路径
-    'key'                    => 'Hello,jjcms2017'                       # 适用于配合其它因素生成token
 ];

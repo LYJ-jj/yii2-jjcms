@@ -7,6 +7,8 @@
 namespace app\admin\models;
 
 use app\ext\DataExt;
+use Yii;
+use yii\behaviors\BlameableBehavior;
 use yii\db\ActiveRecord;
 use yii\helpers\Json;
 use yii\helpers\Url;
@@ -15,6 +17,18 @@ class Menu extends ActiveRecord
 {
     const STATUS_DELETED = '0';
     const STATUS_ACTIVE  = '1';
+
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => BlameableBehavior::className(),
+                'createdByAttribute' => 'author_id',
+                'updatedByAttribute' => null,
+                'value' => Yii::$app->admin->id
+            ]
+        ];
+    }
 
     public static function tableName()
     {

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: 2017-05-03 17:24:21
+-- Generation Time: 2017-05-05 17:49:13
 -- 服务器版本： 5.6.26-log
 -- PHP Version: 5.6.23
 
@@ -31,6 +31,7 @@ USE `jjcms`;
 DROP TABLE IF EXISTS `jj_attribute`;
 CREATE TABLE `jj_attribute` (
   `id` int(11) NOT NULL,
+  `author_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建人id',
   `name` varchar(45) NOT NULL COMMENT '字段标识',
   `note` varchar(64) NOT NULL COMMENT '字段注释',
   `field` varchar(255) NOT NULL COMMENT '字段定义',
@@ -60,10 +61,10 @@ CREATE TABLE `jj_auth_assignment` (
 --
 
 INSERT INTO `jj_auth_assignment` (`item_name`, `user_id`, `created_at`) VALUES
-('admin', '2', 1493263672),
 ('member/*', '1', 1492679796),
 ('rbac/*', '1', 1492679796),
 ('root', '1', 1492679796),
+('root', '4', 1493976494),
 ('site/*', '1', 1492679796);
 
 -- --------------------------------------------------------
@@ -88,7 +89,6 @@ CREATE TABLE `jj_auth_item` (
 --
 
 INSERT INTO `jj_auth_item` (`name`, `type`, `description`, `rule_name`, `data`, `created_at`, `updated_at`) VALUES
-('admin', 1, '管理员', NULL, NULL, 1493102837, 1493102837),
 ('attribute/*', 2, 'attribute/*', NULL, NULL, 1492767943, 1492767943),
 ('attribute/create', 2, 'attribute/create', NULL, NULL, 1492767943, 1492767943),
 ('attribute/delete', 2, 'attribute/delete', NULL, NULL, 1492767943, 1492767943),
@@ -118,6 +118,7 @@ INSERT INTO `jj_auth_item` (`name`, `type`, `description`, `rule_name`, `data`, 
 ('rbac/*', 2, 'rbac/*', NULL, NULL, 1492658763, 1492658763),
 ('rbac/assign-item', 2, 'rbac/assign-item', NULL, NULL, 1492658763, 1492658763),
 ('rbac/create-role', 2, 'rbac/create-role', NULL, NULL, 1492658763, 1492658763),
+('rbac/create-rule', 2, 'rbac/create-rule', NULL, NULL, 1493973053, 1493973053),
 ('rbac/delete-role', 2, 'rbac/delete-role', NULL, NULL, 1493800893, 1493800893),
 ('rbac/roles', 2, 'rbac/roles', NULL, NULL, 1492658763, 1492658763),
 ('rbac/route', 2, 'rbac/route', NULL, NULL, 1492658763, 1492658763),
@@ -161,10 +162,8 @@ INSERT INTO `jj_auth_item_child` (`parent`, `child`) VALUES
 ('root', 'config/*'),
 ('root', 'config/create'),
 ('root', 'config/delete'),
-('admin', 'config/index'),
 ('root', 'config/index'),
 ('root', 'config/update'),
-('admin', 'config/view'),
 ('root', 'config/view'),
 ('root', 'login/email-callback'),
 ('root', 'login/reset'),
@@ -172,54 +171,40 @@ INSERT INTO `jj_auth_item_child` (`parent`, `child`) VALUES
 ('root', 'member/authorize'),
 ('root', 'member/create'),
 ('root', 'member/delete'),
-('admin', 'member/index'),
 ('root', 'member/index'),
 ('root', 'member/update'),
 ('root', 'member/view'),
 ('root', 'menu/*'),
-('admin', 'menu/create'),
 ('root', 'menu/create'),
 ('root', 'menu/delete'),
-('admin', 'menu/index'),
 ('root', 'menu/index'),
 ('root', 'menu/update'),
-('admin', 'menu/view'),
 ('root', 'menu/view'),
 ('root', 'rbac/*'),
 ('root', 'rbac/assign-item'),
 ('root', 'rbac/create-role'),
+('root', 'rbac/create-rule'),
 ('root', 'rbac/delete-role'),
-('admin', 'rbac/roles'),
 ('root', 'rbac/roles'),
-('admin', 'rbac/route'),
 ('root', 'rbac/route'),
-('admin', 'site/*'),
 ('guest', 'site/*'),
 ('root', 'site/*'),
-('admin', 'site/clean'),
 ('guest', 'site/clean'),
 ('root', 'site/clean'),
-('admin', 'site/face'),
 ('guest', 'site/face'),
 ('root', 'site/face'),
-('admin', 'site/index'),
 ('guest', 'site/index'),
 ('root', 'site/index'),
-('admin', 'site/logout'),
 ('guest', 'site/logout'),
 ('root', 'site/logout'),
-('admin', 'site/reset-pass'),
 ('guest', 'site/reset-pass'),
 ('root', 'site/reset-pass'),
-('admin', 'site/test'),
 ('guest', 'site/test'),
 ('root', 'site/test'),
 ('root', 'table/*'),
-('admin', 'table/attribute'),
 ('root', 'table/attribute'),
 ('root', 'table/create'),
 ('root', 'table/delete'),
-('admin', 'table/index'),
 ('root', 'table/index'),
 ('root', 'table/update'),
 ('root', 'table/view');
@@ -237,6 +222,13 @@ CREATE TABLE `jj_auth_rule` (
   `created_at` int(11) DEFAULT NULL,
   `updated_at` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+--
+-- 转存表中的数据 `jj_auth_rule`
+--
+
+INSERT INTO `jj_auth_rule` (`name`, `data`, `created_at`, `updated_at`) VALUES
+('isAuthor', 0x4f3a32373a226170705c61646d696e5c6d6f64656c735c417574686f7252756c65223a333a7b733a343a226e616d65223b733a383a226973417574686f72223b733a393a22637265617465644174223b693a313439333937333439333b733a393a22757064617465644174223b693a313439333937333439333b7d, 1493973493, 1493973493);
 
 -- --------------------------------------------------------
 
@@ -298,6 +290,7 @@ INSERT INTO `jj_file` (`id`, `path`, `url`, `status`, `created_time`) VALUES
 DROP TABLE IF EXISTS `jj_member`;
 CREATE TABLE `jj_member` (
   `id` int(10) UNSIGNED NOT NULL,
+  `author_id` int(10) UNSIGNED NOT NULL DEFAULT '0',
   `username` varchar(32) NOT NULL COMMENT '用户名',
   `auth_key` varchar(64) NOT NULL COMMENT '权限key',
   `password_hash` varchar(64) NOT NULL COMMENT '密码',
@@ -315,8 +308,8 @@ CREATE TABLE `jj_member` (
 -- 转存表中的数据 `jj_member`
 --
 
-INSERT INTO `jj_member` (`id`, `username`, `auth_key`, `password_hash`, `password_reset_token`, `email`, `status`, `created_time`, `updated_time`, `face`, `last_login_time`, `last_login_ip`) VALUES
-(1, 'root', 'ai7I6ODU1N6QuCS2BSHIPd95qzwVcuAm', '$2y$13$YrwDapk7xUkkr0BmkHkxFujhHqg1teGWm3KFSgcblN8w5pizTM67e', 'iUmNMmkEBbvr_QSr4xwFdgeKFD7WINg3_1492138422', '598571948@qq.com', 10, 1492138422, 1492138422, 3451248774174, 1492138422, '127.0.0.1');
+INSERT INTO `jj_member` (`id`, `author_id`, `username`, `auth_key`, `password_hash`, `password_reset_token`, `email`, `status`, `created_time`, `updated_time`, `face`, `last_login_time`, `last_login_ip`) VALUES
+(1, 0, 'root', 'ai7I6ODU1N6QuCS2BSHIPd95qzwVcuAm', '$2y$13$2F43cCY6G8QWnF6Hcx4dAOA6WpCLk8YySIuYYjrPiiRzS1SnwWgGC', 'iUmNMmkEBbvr_QSr4xwFdgeKFD7WINg3_1492138422', '598571948@qq.com', 10, 1492138422, 1492138422, 3451248774174, 1492138422, '127.0.0.1');
 
 -- --------------------------------------------------------
 
@@ -327,6 +320,7 @@ INSERT INTO `jj_member` (`id`, `username`, `auth_key`, `password_hash`, `passwor
 DROP TABLE IF EXISTS `jj_menu`;
 CREATE TABLE `jj_menu` (
   `id` int(11) NOT NULL,
+  `author_id` int(10) UNSIGNED NOT NULL DEFAULT '0',
   `name` varchar(128) NOT NULL,
   `alias` varchar(16) NOT NULL COMMENT '别名',
   `parent` int(11) DEFAULT NULL,
@@ -340,18 +334,19 @@ CREATE TABLE `jj_menu` (
 -- 转存表中的数据 `jj_menu`
 --
 
-INSERT INTO `jj_menu` (`id`, `name`, `alias`, `parent`, `route`, `icon`, `order`, `status`) VALUES
-(2, '权限管理', 'POWER', 0, '', 'glyphicon glyphicon-user', 30, '1'),
-(3, '系统设置', 'SYSTEM', 0, '', 'glyphicon glyphicon-cog', 50, '1'),
-(4, '权限控制', '', 2, '', '', 31, '1'),
-(5, '控制台', 'Home', 0, 'site/index', 'block fa fa-home fa-lg', 1, '1'),
-(6, '后台用户', '', 2, 'member/index', '', 40, '1'),
-(7, '角色', '', 4, 'rbac/roles', '', 32, '1'),
-(8, '路由', '', 4, 'rbac/route', '', 33, '1'),
-(9, '菜单管理', '', 3, 'menu/index', '', 51, '1'),
-(11, '模型管理', '', 3, 'table/index', '', 52, '1'),
-(12, '清除缓存', '', 3, 'site/clean', '', 55, '1'),
-(13, '配置管理', '', 3, 'config/index', '', 53, '1');
+INSERT INTO `jj_menu` (`id`, `author_id`, `name`, `alias`, `parent`, `route`, `icon`, `order`, `status`) VALUES
+(2, 1, '权限管理', 'POWER', 0, '', 'glyphicon glyphicon-user', 30, '1'),
+(3, 1, '系统设置', 'SYSTEM', 0, '', 'glyphicon glyphicon-cog', 50, '1'),
+(4, 1, '权限控制', '', 2, '', '', 31, '1'),
+(5, 1, '控制台', 'Home', 0, 'site/index', 'block fa fa-home fa-lg', 1, '1'),
+(6, 1, '后台用户', '', 2, 'member/index', '', 40, '1'),
+(7, 1, '角色', '', 4, 'rbac/roles', '', 32, '1'),
+(8, 1, '路由', '', 4, 'rbac/route', '', 33, '1'),
+(9, 1, '菜单管理', '', 3, 'menu/index', '', 51, '1'),
+(11, 1, '模型管理', '', 3, 'table/index', '', 52, '1'),
+(12, 1, '清除缓存', '', 3, 'site/clean', '', 55, '1'),
+(13, 1, '配置管理', '', 3, 'config/index', '', 53, '1'),
+(15, 1, '规则', '', 4, 'rbac/create-rule', '', 34, '1');
 
 -- --------------------------------------------------------
 
@@ -382,6 +377,7 @@ INSERT INTO `jj_migration` (`version`, `apply_time`) VALUES
 DROP TABLE IF EXISTS `jj_model`;
 CREATE TABLE `jj_model` (
   `id` int(11) NOT NULL,
+  `author_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建人id',
   `name` varchar(45) NOT NULL COMMENT '模型标识',
   `title` varchar(32) NOT NULL COMMENT '模型名称',
   `need_pk` char(1) NOT NULL DEFAULT '1' COMMENT '是否需要主键(0-不用1-要)',
@@ -474,7 +470,7 @@ ALTER TABLE `jj_model`
 -- 使用表AUTO_INCREMENT `jj_attribute`
 --
 ALTER TABLE `jj_attribute`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 --
 -- 使用表AUTO_INCREMENT `jj_config`
 --
@@ -484,17 +480,17 @@ ALTER TABLE `jj_config`
 -- 使用表AUTO_INCREMENT `jj_member`
 --
 ALTER TABLE `jj_member`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- 使用表AUTO_INCREMENT `jj_menu`
 --
 ALTER TABLE `jj_menu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 --
 -- 使用表AUTO_INCREMENT `jj_model`
 --
 ALTER TABLE `jj_model`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 --
 -- 限制导出的表
 --

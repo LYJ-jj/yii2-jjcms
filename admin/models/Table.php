@@ -2,10 +2,32 @@
 
 namespace app\admin\models;
 
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
-
+use yii\db\Expression;
+use Yii;
 class Table extends ActiveRecord
 {
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => BlameableBehavior::className(),
+                'createdByAttribute' => 'author_id',
+                'updatedByAttribute' => null,
+                'value' => Yii::$app->admin->id
+            ],
+
+            [
+                'class' => TimestampBehavior::className(),
+                'createdAtAttribute' => null,
+                'updatedAtAttribute' => 'update_time',
+                'value' => time()
+            ]
+        ];
+    }
+
     public static function tableName()
     {
         return "{{%model}}";

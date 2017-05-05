@@ -64,7 +64,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         return HtmlExt::a('<i class="glyphicon glyphicon-pencil"></i> 编辑',$url,['class' => 'btn btn-info btn-xs']);
                     },
                     'delete' => function($url,$model,$key){
-                        return HtmlExt::a('<i class="glyphicon glyphicon-trash"></i> 删除',$url,['class' => 'btn btn-danger btn-xs']);
+                        return HtmlExt::a('<i class="glyphicon glyphicon-trash"></i> 删除',$url,['class' => 'btn btn-danger btn-xs','data'=>[
+                                'confirm' => '确定删除此菜单吗？',
+                                'method'  => 'post'
+                        ]]);
                     },
                 ]
             ],

@@ -41,7 +41,7 @@ class CommonController extends BasicController
             return true;
         }
 
-        throw new UnauthorizedHttpException('抱歉,您没有访问该页面的权限!');
+        throw new UnauthorizedHttpException('抱歉,您没有访问该页面或执行该操作的权限!');
         //return true;
     }
 }

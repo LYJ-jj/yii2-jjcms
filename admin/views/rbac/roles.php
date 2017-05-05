@@ -48,10 +48,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         return HtmlExt::a('分配权限',['assign-item','name' => $model['name']],['class' => 'btn btn-xs btn-primary']);
                     },
                     'delete'  => function($url,$model,$key){
-                        return HtmlExt::a('删除',['delete-role','name' => $model['name']],['class' => 'btn btn-xs btn-danger','data' => [
+                        if( $model['name'] != 'root' ){
+                            return HtmlExt::a('删除',['delete-role','name' => $model['name']],['class' => 'btn btn-xs btn-danger','data' => [
                                 'confirm' => '您确定要删除该角色吗？',
                                 'method'  => 'post'
-                        ]]);
+                            ]]);
+                        }
                     }
                 ]
             ]

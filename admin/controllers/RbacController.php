@@ -31,7 +31,7 @@ class RbacController extends CommonController
                 'user'  => 'admin',
                 'rules' => [
                     [
-                        'actions'   => ['assign-item','roles','create-role','route','delete-role'],
+                        'actions'   => ['assign-item','roles','create-role','route','delete-role','create-rule'],
                         'allow'     => true,
                         'roles'     => ['@'],
                     ]
@@ -210,6 +210,57 @@ class RbacController extends CommonController
         }else{
             $this->Error('删除失败!',['rbac/roles']);
         }
+    }
+
+    /**
+     * 创建规则
+     * @return string
+     * @throws \Exception
+     */
+    public function actionCreateRule()
+    {
+        if( \Yii::$app->request->isPost ){
+            $post = $this->requestParams();
+            if( empty($post['class_name']) ){
+                throw new \Exception('参数错误!',500);
+            }
+
+            $className = "app\\admin\\models\\".$post['class_name'];
+            if( class_exists($className) ){
+                $rule = new $className;
+                if( \Yii::$app->authManager->add($rule) ){
+                    $this->Success('添加成功!',['rbac/create-rule']);
+                }
+            }else{
+                throw new \Exception('规则类文件不存在!');
+            }
+        }
+        return $this->render('create-rule');
+    }
+
+    /**
+     * 检查用户是否拥有root权限
+     */
+    public static function isRoot( $userId = '' )
+    {
+        if( empty($userId) ){
+            $userId = \Yii::$app->admin->id;
+        }
+
+        $auth  = \Yii::$app->authManager;
+        $roles = $auth->getRolesByUser($userId);
+
+        if( empty($roles) ){
+            return false;
+        }
+
+        foreach($roles as $item){
+            if( $item->name == 'root' ){
+                return true;
+            }
+        }
+
+        return false;
     }
 
 }

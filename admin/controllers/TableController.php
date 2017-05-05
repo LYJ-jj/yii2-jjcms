@@ -3,6 +3,7 @@
 namespace app\admin\controllers;
 
 use app\admin\models\Attribute;
+use app\admin\models\Config;
 use Yii;
 use app\admin\models\Table;
 use app\admin\models\TableSearch;
@@ -286,12 +287,13 @@ class TableController extends CommonController
      */
     public function actionAttribute($id)
     {
+        $config = Config::getConfig();
         $request = Yii::$app->request;
         $model = $this->findModel($id);
         $dataProvider = new ActiveDataProvider([
             'query' => Attribute::find()->where(['model_id'=>$id]),
             'pagination'=>[
-                'pageSize' => Yii::$app->params['defaultRows']
+                'pageSize' => isset($config['default_rows']) && $config['default_rows'] ? $config['default_rows'] : 10
             ]
         ]);
         return $this->render('../attribute/attribute',['dataProvider'=>$dataProvider,'model'=>$model,'modelName'=>$model->name]);

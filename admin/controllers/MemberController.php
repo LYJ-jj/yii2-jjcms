@@ -78,7 +78,7 @@ class MemberController extends CommonController
      */
     public function actionCreate()
     {
-        $this->redirect(['login/signup']);
+        $this->redirect(['login/signup','id' => Yii::$app->admin->id]);
     }
 
     /**
@@ -89,10 +89,14 @@ class MemberController extends CommonController
      */
     public function actionUpdate($id)
     {
+        $root  = Admin::findByUsername('root');
         $model = $this->findModel($id);
+        if( $model->username == 'root' && $id != $root->id ){
+            $this->Error('您不能修改root用户！',['member/index']);
+        }
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->Success('保存成功!',['member/index']);
         } else {
             return $this->render('update', [
                 'model' => $model,
@@ -109,9 +113,15 @@ class MemberController extends CommonController
     public function actionDelete($id)
     {
         $admin = $this->findModel($id);
+        $auth  = Yii::$app->authManager;
+
 
         if( $id == 1 || $admin->username == 'root' ){
             return $this->Error('root用户不能被删除!',['member/index']);
+        }
+
+        if( $admin->author_id != Yii::$app->admin->id && !RbacController::isRoot() ){
+            return $this->Error('抱歉！您无权删除此用户!',['member/index']);
         }
         $admin->delete();
         return $this->Success('删除成功!',['member/index']);
@@ -169,6 +179,10 @@ class MemberController extends CommonController
     }
 
 
+    /**
+     * 获取头像路径
+     * @return mixed|static
+     */
    public static function getFaceUrl()
    {
        $faceId = Yii::$app->admin->identity->face;

@@ -46,15 +46,16 @@ class SignupForm extends Model
         ];
     }
 
-    public function signup()
+    public function signup($adminId = '')
     {
         if( !$this->validate() ){
             return null;
         }
         $now = time();
         $user = new Admin();
-        $user->username = $this->username;
-        $user->email    = $this->email;
+        $user->author_id = $adminId ? $adminId : 0;
+        $user->username  = $this->username;
+        $user->email     = $this->email;
         $user->setPassword( $this->password );
         $user->generateAuthKey();
         $user->generatePasswordResetToken();

@@ -59,13 +59,13 @@ class LoginController extends Controller
 
     public function actionEmailCallback()
     {
-        $get = Yii::$app->request->get();
-        $tok = Yii::$app->cache->get($get['username'].$get['email']);
+        $get  = Yii::$app->request->get();
+        $tok  = Yii::$app->cache->get($get['username'].$get['email']);
+        $user = Admin::findByUsername($get['username']);
 
-        if( $get['token'] == $tok ){
+        if( md5($get['time'].$get['username'].$get['email'].$user->password_reset_token) == $tok ){
             $new_pass = functions::randStr(6);
             if( ResetPass::sendPassByEmail($get['email'],$new_pass) ){
-                $user     = Admin::findByUsername($get['username']);
                 $user->setPassword( $new_pass );
                 $user->save();
                 $this->Success('新的密码已发至您的邮箱，请查收！',['login/login']);
@@ -90,7 +90,7 @@ class LoginController extends Controller
                 $form = $post['ResetPass'];
                 $user = Admin::findByUsername($model->username);
                 if( $user && $user->email == $model->email ){
-                    $res = $model->seekpass();
+                    $res = $model->seekpass('jjcms后台密码找回');
                     if( $res ){
                         $alerts = functions::bootstrapAlerts('success','邮件发送成功!请注意查收');
                     }else{
@@ -125,7 +125,7 @@ class LoginController extends Controller
             $model = new SignupForm();
 
             if( $model->load(Yii::$app->request->post()) ){
-                if( $user = $model->signup() ){
+                if( $user = $model->signup(Yii::$app->request->get('id','')) ){
                     return $this->goHome();
                 }
             }

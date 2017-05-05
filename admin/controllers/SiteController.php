@@ -158,7 +158,8 @@ class SiteController extends CommonController
 
     public function actionTest()
     {
-        $a = Yii::$app->session->get('root598571948@qq.com');
+        $a = Yii::$app->authManager->getRolesByUser(Yii::$app->admin->id);
+        //$a = Yii::$app->authManager->getPermissionsByUser(Yii::$app->admin->id);
         echo '<pre>';
         print_r($a);
     }

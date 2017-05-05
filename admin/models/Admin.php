@@ -5,7 +5,7 @@ use app\core\Uploads;
 use Yii;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
-
+use yii\behaviors\BlameableBehavior;
 class Admin extends ActiveRecord implements IdentityInterface
 {
     const STATUS_DELETED = 0;
