@@ -6,7 +6,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\admin\models\Config */
 
-$this->title = $model->web_name;
+$this->title = $model->title;
 $this->params['breadcrumbs'][] = ['label' => 'Configs', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -22,17 +22,37 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             //'id',
-            'web_name',
-            'web_alias',
-            'web_describe',
-            'web_keyword',
-            'web_record',
-            'web_email:email',
-            'admin_is_allow_register',
-            'app_is_allow_register',
-            'default_rows',
-            'default_cache_expire',
-            'is_show_help',
+            'name',
+            'title',
+            [
+                'attribute' => 'groups',
+                'value'     => function($data){
+                    return \app\admin\controllers\ConfigController::$group[$data->groups];
+                }
+            ],
+
+            'value',
+            'remark',
+            'sort',
+            [
+                'attribute' => 'created_time',
+                'value'     => function($data){
+                    return date('Y-m-d H:i',$data->created_time);
+                }
+            ],
+
+            [
+                'attribute' => 'updated_time',
+                'value'     => function($data){
+                    return date('Y-m-d H:i',$data->updated_time);
+                }
+            ],
+            [
+                'attribute' => 'status',
+                'value'     => function($data){
+                    return $data->status ? '正常' : '停用';
+                }
+            ],
         ],
     ]) ?>
 

@@ -19,42 +19,53 @@ $this->params['breadcrumbs'][] = $this->title;
     </p>
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
+        'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
             //'id',
-            'web_name',
+            'name',
+            'title',
             [
-                'attribute' => 'web_alias',
+                'attribute' => 'groups',
+                'filter'    => $gp_filter,
                 'value'     => function($data){
-                    return functions::msubstr($data->web_alias,0,10,false);
+                    return \app\admin\controllers\ConfigController::$group[$data->groups];
                 }
             ],
+
+            'value',
             [
-                'attribute' => 'web_describe',
+                'attribute' => 'created_time',
                 'value'     => function($data){
-                    return functions::msubstr($data->web_describe,0,10);
+                    return date('Y-m-d H:i',$data->created_time);
                 }
             ],
-            'web_keyword',
-            'web_record',
-             'web_email:email',
-             //'admin_is_allow_register',
-             //'app_is_allow_register',
-            'default_rows',
-             'default_cache_expire',
-            'is_show_help',
+
+            [
+                'attribute' => 'status',
+                'filter'    => ['0' => '停用','1'=> '正常'],
+                'value'     => function($data){
+                    return $data->status ? '正常' : '停用';
+                }
+            ],
 
             [
                 'class'     => 'yii\grid\ActionColumn',
                 'header'    => '操作',
-                'template'  => '{view} {update}',
+                'template'  => '{view} {update} {delete}',
                 'buttons'   => [
                     'view'  => function($url,$model){
                         return HtmlExt::a('<i class="glyphicon glyphicon-eye-open"></i> 详情',$url);
                     },
                     'update'=> function($url,$model){
                         return HtmlExt::a('<i class="glyphicon glyphicon-pencil"></i> 编辑',$url);
+                    },
+                    'delete'=> function($url,$model){
+                        return HtmlExt::a('<i class="fa fa-trash-o"></i> 删除',$url,['data' => [
+                                'confirm' => '您确定要删除此配置吗？',
+                                'method'  => 'post'
+                        ]]);
                     }
                 ]
             ],

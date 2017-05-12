@@ -40,32 +40,40 @@
 ------------
 
 ###1.使用git克隆或下载源码
+
 ~~~
 git clone https://github.com/LYJ-jj/yii2-jjcms.git
 ~~~
 ###2.更新并下载composer.json文件
+
 ~~~
 php composer.phar update
 ~~~
+
 !!! 如果您的电脑尚未安装composer，请前往官网下载并安装使用。
 
 composer官网： http://docs.phpcomposer.com/
 
 ###3.使用bower下载bower.json中所注明的相关插件
+
 ###(此步骤建议执行，跳过亦可,暂不影响使用)
 !!! 如果您还没有安装bower，请前往官网进行下载安装。
 
 bower官网：https://bower.io/
+
 ~~~
 bower install
 ~~~
+
 ###4.新建数据库及数据表(相关文件在sql文件夹中)。
+
 ###5.打开config/db.php，修改相关配置。
+
 ###6.完成。
 
 开始访问
 -------------
-路由规程为：http://host.com/[\<module>/]\<controller>/\<action>
+路由规程为：http://host.com/\<module>/\<controller>/\<action>
 
 例如:
 
@@ -75,6 +83,7 @@ http://www.localhost.com/admin/site/index(后台首页)
 
 Apache虚拟主机配置参数
 -------
+
 ~~~
 <VirtualHost *:80>
     ServerName host
@@ -99,6 +108,16 @@ Apache虚拟主机配置参数
 
 当前版本
 --------
+v1.0.2
+
+更新内容
+--------
+v1.0.2
+
+重构配置管理模块，编写说明文档
+
 v1.0.1
+
+新增规则权限
     
 

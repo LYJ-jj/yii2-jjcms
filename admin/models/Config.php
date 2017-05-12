@@ -8,6 +8,7 @@ namespace app\admin\models;
 
 use app\core\functions;
 use app\ext\DataExt;
+use yii\behaviors\AttributeBehavior;
 use yii\db\ActiveRecord;
 
 class Config extends ActiveRecord
@@ -17,29 +18,45 @@ class Config extends ActiveRecord
         return "{{%config}}";
     }
 
+    public function behaviors()
+    {
+        return [
+            [
+                'class' => AttributeBehavior::className(),
+                'attributes' => [
+                    ActiveRecord::EVENT_BEFORE_INSERT => 'created_time',
+                    ActiveRecord::EVENT_BEFORE_UPDATE => 'updated_time'
+                ],
+                'value' => time()
+            ]
+        ];
+    }
+
     public function rules()
     {
         return [
             ['id','safe'],
-            [['web_name','web_alias','web_describe','web_keyword','web_record','web_email','admin_is_allow_register','app_is_allow_register','is_show_help'],'string'],
-            [['default_rows','default_cache_expire'],'integer']
+            [['name','title','groups','value','sort','status'],'required','message' => '*必填项'],
+            [['name'],'unique'],
+            ['remark','string','length' => [0,255]],
+            ['name','string','length' =>[2,64]],
+            ['title','string','length' =>[2,32]],
+            [['created_time','updated_time','sort'],'integer']
         ];
     }
 
     public function attributeLabels()
     {
         return [
-            'web_name'      => '网站名称',
-            'web_alias'     => '网站别名',
-            'web_describe'  => '网站描述',
-            'web_keyword'   => '网站关键字',
-            'web_record'    => '网站备案号',
-            'web_email'     => '管理员邮箱',
-            'admin_is_allow_register' => '后台是否允许注册',
-            'app_is_allow_register'   => '前台是否允许注册',
-            'default_rows'  => '默认显示行数',
-            'default_cache_expire' => '默认缓存失效时间',
-            'is_show_help'  => '是否显示帮助信息'
+            'name'  => '配置标识',
+            'title' => '配置标题',
+            'groups'=> '组别',
+            'value' => '配置值',
+            'remark'=> '配置说明',
+            'sort'  => '排序',
+            'created_time' => '创建时间',
+            'updated_time' => '更新时间',
+            'status' => '状态'
         ];
     }
 
@@ -49,12 +66,20 @@ class Config extends ActiveRecord
      */
     public static function getConfig($useCache = true)
     {
+        $data  = [];
         if( $useCache ){
-            $data = functions::convertAssoc(DataExt::getData(new self));
+            $lists = DataExt::getData(new self,[
+                'andWhere' => [
+                    ['status' => '1']
+                ]
+            ]);
         }else{
-            $data = self::find()->where(['>','id',0])->limit(1)->asArray()->one();
+            $lists = self::find()->where(['>','id',0])->andWhere(['status' => '1'])->orderBy('sort asc')->asArray()->all();
         }
 
+        foreach($lists as $item){
+            $data["{$item['name']}"] = $item['value'];
+        }
         return $data;
     }
 }

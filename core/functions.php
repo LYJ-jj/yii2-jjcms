@@ -14,11 +14,11 @@ class functions
 {
     /**
      * 字符串截取，支持中文编码
-     * @param $str
-     * @param int $start
-     * @param $len
-     * @param string $charset
+     * @param string $str
+     * @param int    $start
+     * @param int    $len
      * @param bool $suffix
+     * @param string $charset
      * @return string
      */
     public static function msubstr($str,$start=0,$len,$suffix=true,$charset='utf-8')
@@ -72,7 +72,7 @@ class functions
      * 在大写字母前用 '-' 号分隔
      * 例:
      */
-    public static function formatString( $string )
+    public static function formatString( $string,$char = '-' )
     {
         $len    = strlen( $string );
         if( $len <= 0 ){
@@ -83,7 +83,7 @@ class functions
         for($i=0;$i<$len;$i++){
             $ascii_num = ord($string[$i]);
             if( $ascii_num >= 65 && $ascii_num <= 90 ){
-                $newStr .= '-'.$string[$i];
+                $newStr .= $char.$string[$i];
             }else{
                 $newStr .= $string[$i];
             }
@@ -93,7 +93,10 @@ class functions
     }
 
     /**
-     * 全局的安全过滤函数
+     * 字符串安全过滤函数
+     * @param $text
+     * @param string $type
+     * @return mixed|string
      */
     public static function safeString($text,$type = 'html')
     {
@@ -176,6 +179,8 @@ class functions
     /**
      * 从字符串中提取指定内容或元素(目前仅支持部分元素)
      * @param $string   string  要提取的目标字符串
+     * @param $type     string  类型
+     * @return string
      */
     public static function getDomByStr($string,$type = 'input')
     {
@@ -276,59 +281,16 @@ class functions
 
     }
 
-
     /**
-     * 获取属性别名
-     * @param1  $model      yii\db\ActivityRecord       活动记录模型
-     * @param2  $attribute  array                       要获取别名的字段(空则获取所有字段的别名)
-     * return  array
-     */
-    public static function getAttributeLabel($model,$attribute = [])
-    {
-        if(empty($attribute)){
-            $attr = $model->getAttributes();
-            foreach($attr as $k=>$v){
-                $attribute[] = $k;
-            }
-        }
-
-        foreach($attribute as $_v){
-            $label[] = $model->getAttributeLabel($_v);
-        }
-
-        return !empty($label)? $label : false;
-    }
-
-    /**
-     * 根据where检索，返回yii的数据结果集，用于GridView控件中
-     * @param1  $model  yii\db\ActivityRecord       活动记录模型
-     * @param2  $where  array                       yii检索条件
-     */
-    public static function getDataProvider($model,$where)
-    {
-        if(!$model || !$where){
-            return false;
-        }
-
-        $dataProvider = new ActiveDataProvider([
-            'query' => $model::find()->where($where),
-            'pagination'=>[
-                'pageSize' => Yii::$app->params['pageSize']
-            ]
-        ]);
-
-        return $dataProvider;
-    }
-
-    /**
-     * 根据一个表主键值集合数组，如['1','2']。 将返回制定表中的指定字段的值，以字符串或者数组方式返回
+     * 根据一个表主键值集合数组，如['1','2']。 将返回指定表中的指定字段的值，以字符串或者数组方式返回
      * @param1  $model  yii\db\ActivityRecord       活动记录模型
      * @param2  $ids    array                       主键值集合
      * @param3  $field  string                      想要返回的表中字段
      * @param4  $type   string                      返回值类型(string or array)
-     * return   array|string
+     * @param5  $pk     string                      主键
+     * @return   array|string
      */
-    public static function getFieldValByIds($model,$ids,$field,$type='string')
+    public static function getFieldValByIds($model,$ids,$field,$type='string',$pk='id')
     {
         if(!is_array($ids) || ($type!='string'&&$type!='array') || !$field){
             return false;
@@ -336,7 +298,7 @@ class functions
 
         $res = [];
         foreach($ids as $id){
-            $info = $model::findOne($id);
+            $info = $model::findOne(["{$pk}" => $id]);
             $res[] = $info->$field;
         }
 
@@ -344,7 +306,7 @@ class functions
     }
 
     /**
-     * 将ActivityRecord模型中的一个或多个字段取出，返回的样式有四种：
+     * 将ActivityRecord模型中的一个或多个字段取出，返回的样式有七种：
      * ① return  [id]=value             #id值作为索引
      * ② return  [field] = value        #属性名作为索引
      * ③ return  [] = value             #自然索引
@@ -475,11 +437,11 @@ class functions
 
    
    /*
-    * 将N维数组转化为一维关联数组
+    * 将N维数组转化为一维数组
     * @param1 $array    array   数组
-    * return array
+    * @return array
     */
-   public static function convertAssoc($array,$returnType = 'index')
+   public static function convertAssoc($array)
    {
        if( empty($array) ){
            return $array;
@@ -499,7 +461,6 @@ class functions
 
     /**
      * 将二维数组中指定索引的值转为一维数组
-     *
      */
     public static function getOneArrayByIndex($array,$index)
     {

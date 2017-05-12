@@ -12,7 +12,11 @@ class BasicController extends Controller
 {
 
     /**
-     * get或post获取参数
+     * 获取get | post请求中的参数
+     * @param string $method
+     * @param null $key
+     * @param null $defaultVal
+     * @return array|mixed
      */
     public function requestParams( $method = 'post',$key = null , $defaultVal = null)
     {
@@ -29,16 +33,17 @@ class BasicController extends Controller
      * 带提示的成功/错误跳转
      * @param $info
      * @param $url
+     * @param $statusCode
      */
-    public function Success($info,$url)
+    public function Success($info,$url,$statusCode = 302)
     {
         Yii::$app->session->setFlash('msg',['status'=>'success','mes'=>$info]);
-        return $this->redirect($url);
+        return $this->redirect($url,$statusCode);
     }
 
-    public function Error($info,$url)
+    public function Error($info,$url,$statusCode = 302)
     {
         Yii::$app->session->setFlash('msg',['status'=>'danger','mes'=>$info]);
-        return $this->redirect($url);
+        return $this->redirect($url,$statusCode);
     }
 }

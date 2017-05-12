@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: 2017-05-05 17:49:13
+-- Generation Time: 2017-05-12 17:21:39
 -- 服务器版本： 5.6.26-log
 -- PHP Version: 5.6.23
 
@@ -28,11 +28,10 @@ USE `jjcms`;
 -- 表的结构 `jj_attribute`
 --
 
-DROP TABLE IF EXISTS `jj_attribute`;
-CREATE TABLE `jj_attribute` (
-  `id` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `jj_attribute` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `author_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建人id',
-  `name` varchar(45) NOT NULL COMMENT '字段标识',
+  `name` varchar(64) NOT NULL COMMENT '字段标识',
   `note` varchar(64) NOT NULL COMMENT '字段注释',
   `field` varchar(255) NOT NULL COMMENT '字段定义',
   `type` varchar(16) NOT NULL COMMENT '数据类型',
@@ -40,7 +39,8 @@ CREATE TABLE `jj_attribute` (
   `model_id` int(10) UNSIGNED NOT NULL COMMENT '模型id',
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
-  `remark` varchar(255) NOT NULL COMMENT '备注'
+  `remark` varchar(255) NOT NULL COMMENT '备注',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='模型字段表';
 
 -- --------------------------------------------------------
@@ -49,11 +49,11 @@ CREATE TABLE `jj_attribute` (
 -- 表的结构 `jj_auth_assignment`
 --
 
-DROP TABLE IF EXISTS `jj_auth_assignment`;
-CREATE TABLE `jj_auth_assignment` (
+CREATE TABLE IF NOT EXISTS `jj_auth_assignment` (
   `item_name` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   `user_id` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
-  `created_at` int(11) DEFAULT NULL
+  `created_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`item_name`,`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
@@ -73,15 +73,17 @@ INSERT INTO `jj_auth_assignment` (`item_name`, `user_id`, `created_at`) VALUES
 -- 表的结构 `jj_auth_item`
 --
 
-DROP TABLE IF EXISTS `jj_auth_item`;
-CREATE TABLE `jj_auth_item` (
+CREATE TABLE IF NOT EXISTS `jj_auth_item` (
   `name` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   `type` smallint(6) NOT NULL,
   `description` text COLLATE utf8_unicode_ci,
   `rule_name` varchar(64) COLLATE utf8_unicode_ci DEFAULT NULL,
   `data` blob,
   `created_at` int(11) DEFAULT NULL,
-  `updated_at` int(11) DEFAULT NULL
+  `updated_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`name`),
+  KEY `rule_name` (`rule_name`),
+  KEY `idx-auth_item-type` (`type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
@@ -144,10 +146,11 @@ INSERT INTO `jj_auth_item` (`name`, `type`, `description`, `rule_name`, `data`, 
 -- 表的结构 `jj_auth_item_child`
 --
 
-DROP TABLE IF EXISTS `jj_auth_item_child`;
-CREATE TABLE `jj_auth_item_child` (
+CREATE TABLE IF NOT EXISTS `jj_auth_item_child` (
   `parent` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
-  `child` varchar(64) COLLATE utf8_unicode_ci NOT NULL
+  `child` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
+  PRIMARY KEY (`parent`,`child`),
+  KEY `child` (`child`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
@@ -215,12 +218,12 @@ INSERT INTO `jj_auth_item_child` (`parent`, `child`) VALUES
 -- 表的结构 `jj_auth_rule`
 --
 
-DROP TABLE IF EXISTS `jj_auth_rule`;
-CREATE TABLE `jj_auth_rule` (
+CREATE TABLE IF NOT EXISTS `jj_auth_rule` (
   `name` varchar(64) COLLATE utf8_unicode_ci NOT NULL,
   `data` blob,
   `created_at` int(11) DEFAULT NULL,
-  `updated_at` int(11) DEFAULT NULL
+  `updated_at` int(11) DEFAULT NULL,
+  PRIMARY KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
@@ -236,28 +239,35 @@ INSERT INTO `jj_auth_rule` (`name`, `data`, `created_at`, `updated_at`) VALUES
 -- 表的结构 `jj_config`
 --
 
-DROP TABLE IF EXISTS `jj_config`;
-CREATE TABLE `jj_config` (
-  `id` smallint(5) UNSIGNED NOT NULL,
-  `web_name` varchar(32) NOT NULL COMMENT '网站名称',
-  `web_alias` varchar(32) NOT NULL COMMENT '网站别名',
-  `web_describe` varchar(128) NOT NULL COMMENT '网站描述',
-  `web_keyword` varchar(64) NOT NULL COMMENT '网站关键字',
-  `web_record` varchar(32) NOT NULL COMMENT '网站备案号',
-  `web_email` varchar(32) NOT NULL COMMENT '管理员邮箱',
-  `admin_is_allow_register` char(1) NOT NULL DEFAULT '1' COMMENT '后台是否允许注册(1-可以0-不可以)',
-  `app_is_allow_register` char(1) NOT NULL DEFAULT '1' COMMENT '前台是否允许注册',
-  `default_rows` tinyint(3) UNSIGNED NOT NULL DEFAULT '10' COMMENT '显示行数',
-  `default_cache_expire` smallint(5) UNSIGNED NOT NULL DEFAULT '120' COMMENT '默认缓存时间',
-  `is_show_help` char(1) NOT NULL DEFAULT '1' COMMENT '是否显示系统帮助信息'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE TABLE IF NOT EXISTS `jj_config` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '配置id',
+  `name` varchar(64) NOT NULL COMMENT '配置标识',
+  `title` varchar(32) NOT NULL COMMENT '配置标题',
+  `groups` char(1) NOT NULL COMMENT '组别',
+  `value` varchar(255) NOT NULL COMMENT '配置值',
+  `remark` varchar(255) NOT NULL COMMENT '配置说明',
+  `sort` smallint(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT '排序',
+  `created_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `updated_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
+  `status` char(1) NOT NULL DEFAULT '1' COMMENT '状态(0-停用1-启用)',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 
 --
 -- 转存表中的数据 `jj_config`
 --
 
-INSERT INTO `jj_config` (`id`, `web_name`, `web_alias`, `web_describe`, `web_keyword`, `web_record`, `web_email`, `admin_is_allow_register`, `app_is_allow_register`, `default_rows`, `default_cache_expire`, `is_show_help`) VALUES
-(1, 'jjCMS', '通用管理后台', '基于Yii2框架搭建的后台管理系统', 'yii2,jjCMS', '', 'jjcms2017@163.com', '1', '1', 10, 120, '1');
+INSERT INTO `jj_config` (`id`, `name`, `title`, `groups`, `value`, `remark`, `sort`, `created_time`, `updated_time`, `status`) VALUES
+(1, 'web_name', '网站名称', '1', 'jjcms', '', 5, 1494573198, 1494573788, '1'),
+(2, 'web_alias', '网站别名', '1', '通用管理后台', '', 10, 1494573241, 1494573804, '1'),
+(3, 'web_describe', '网站描述', '1', '基于yii2框架搭建的通用管理后台', '', 15, 1494573313, 1494573313, '1'),
+(4, 'web_keyword', '网站关键字', '1', 'yii2 cms,jjcms,yii2', '', 20, 1494573395, 1494573395, '1'),
+(5, 'web_record', '网站备案', '1', '', '', 25, 1494573427, 1494573427, '1'),
+(6, 'web_email', '管理员邮箱', '3', 'jjcms2017@163.com', '', 30, 1494573468, 1494573468, '1'),
+(7, 'admin_is_allow_register', '后台是否允许注册', '4', '1', '', 40, 1494573589, 1494573589, '1'),
+(8, 'app_is_allow+register', '前台是否允许注册', '4', '1', '', 45, 1494573635, 1494573635, '1'),
+(9, 'default_rows', '默认显示行数', '2', '10', '', 50, 1494573668, 1494573668, '1'),
+(10, 'default_cache_expire', '默认缓存失效时间', '4', '120', '', 55, 1494573706, 1494573706, '1');
 
 -- --------------------------------------------------------
 
@@ -265,13 +275,13 @@ INSERT INTO `jj_config` (`id`, `web_name`, `web_alias`, `web_describe`, `web_key
 -- 表的结构 `jj_file`
 --
 
-DROP TABLE IF EXISTS `jj_file`;
-CREATE TABLE `jj_file` (
+CREATE TABLE IF NOT EXISTS `jj_file` (
   `id` bigint(11) NOT NULL,
   `path` varchar(255) NOT NULL COMMENT '路径',
   `url` varchar(255) NOT NULL COMMENT '图片路径',
   `status` char(1) NOT NULL DEFAULT '1' COMMENT '状态(0-停用1-启用)',
-  `created_time` int(10) NOT NULL DEFAULT '0' COMMENT '创建时间'
+  `created_time` int(10) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='文件表';
 
 --
@@ -287,9 +297,8 @@ INSERT INTO `jj_file` (`id`, `path`, `url`, `status`, `created_time`) VALUES
 -- 表的结构 `jj_member`
 --
 
-DROP TABLE IF EXISTS `jj_member`;
-CREATE TABLE `jj_member` (
-  `id` int(10) UNSIGNED NOT NULL,
+CREATE TABLE IF NOT EXISTS `jj_member` (
+  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `author_id` int(10) UNSIGNED NOT NULL DEFAULT '0',
   `username` varchar(32) NOT NULL COMMENT '用户名',
   `auth_key` varchar(64) NOT NULL COMMENT '权限key',
@@ -301,8 +310,10 @@ CREATE TABLE `jj_member` (
   `updated_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
   `face` bigint(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT '头像id',
   `last_login_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '最后一次登录时间',
-  `last_login_ip` varchar(255) NOT NULL COMMENT '最后一次登录ip'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='后台会员表';
+  `last_login_ip` varchar(255) NOT NULL COMMENT '最后一次登录ip',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UQ_email` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COMMENT='后台会员表';
 
 --
 -- 转存表中的数据 `jj_member`
@@ -317,9 +328,8 @@ INSERT INTO `jj_member` (`id`, `author_id`, `username`, `auth_key`, `password_ha
 -- 表的结构 `jj_menu`
 --
 
-DROP TABLE IF EXISTS `jj_menu`;
-CREATE TABLE `jj_menu` (
-  `id` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `jj_menu` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `author_id` int(10) UNSIGNED NOT NULL DEFAULT '0',
   `name` varchar(128) NOT NULL,
   `alias` varchar(16) NOT NULL COMMENT '别名',
@@ -327,8 +337,10 @@ CREATE TABLE `jj_menu` (
   `route` varchar(256) DEFAULT NULL,
   `icon` varchar(64) NOT NULL COMMENT '图标css类',
   `order` int(11) DEFAULT NULL,
-  `status` char(1) NOT NULL DEFAULT '0' COMMENT '状态(0-停用1-启用)'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `status` char(1) NOT NULL DEFAULT '0' COMMENT '状态(0-停用1-启用)',
+  PRIMARY KEY (`id`),
+  KEY `parent` (`parent`)
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 
 --
 -- 转存表中的数据 `jj_menu`
@@ -354,10 +366,10 @@ INSERT INTO `jj_menu` (`id`, `author_id`, `name`, `alias`, `parent`, `route`, `i
 -- 表的结构 `jj_migration`
 --
 
-DROP TABLE IF EXISTS `jj_migration`;
-CREATE TABLE `jj_migration` (
+CREATE TABLE IF NOT EXISTS `jj_migration` (
   `version` varchar(180) NOT NULL,
-  `apply_time` int(11) DEFAULT NULL
+  `apply_time` int(11) DEFAULT NULL,
+  PRIMARY KEY (`version`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
@@ -374,123 +386,52 @@ INSERT INTO `jj_migration` (`version`, `apply_time`) VALUES
 -- 表的结构 `jj_model`
 --
 
-DROP TABLE IF EXISTS `jj_model`;
-CREATE TABLE `jj_model` (
-  `id` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `jj_model` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `author_id` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '创建人id',
-  `name` varchar(45) NOT NULL COMMENT '模型标识',
+  `name` varchar(64) NOT NULL COMMENT '模型标识',
   `title` varchar(32) NOT NULL COMMENT '模型名称',
   `need_pk` char(1) NOT NULL DEFAULT '1' COMMENT '是否需要主键(0-不用1-要)',
   `engine_type` varchar(16) NOT NULL DEFAULT 'InnoDB' COMMENT '数据库引擎',
   `create_time` int(11) NOT NULL DEFAULT '0' COMMENT '创建时间',
   `update_time` int(11) NOT NULL DEFAULT '0' COMMENT '更新时间',
-  `pk_type` char(1) NOT NULL DEFAULT '0' COMMENT '主键类型(1-自增(int) 2-不自增(bigint))'
+  `pk_type` char(1) NOT NULL DEFAULT '0' COMMENT '主键类型(1-自增(int) 2-不自增(bigint))',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='模型表';
 
---
--- Indexes for dumped tables
---
+-- --------------------------------------------------------
 
 --
--- Indexes for table `jj_attribute`
---
-ALTER TABLE `jj_attribute`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `jj_auth_assignment`
---
-ALTER TABLE `jj_auth_assignment`
-  ADD PRIMARY KEY (`item_name`,`user_id`);
-
---
--- Indexes for table `jj_auth_item`
---
-ALTER TABLE `jj_auth_item`
-  ADD PRIMARY KEY (`name`),
-  ADD KEY `rule_name` (`rule_name`),
-  ADD KEY `idx-auth_item-type` (`type`);
-
---
--- Indexes for table `jj_auth_item_child`
---
-ALTER TABLE `jj_auth_item_child`
-  ADD PRIMARY KEY (`parent`,`child`),
-  ADD KEY `child` (`child`);
-
---
--- Indexes for table `jj_auth_rule`
---
-ALTER TABLE `jj_auth_rule`
-  ADD PRIMARY KEY (`name`);
-
---
--- Indexes for table `jj_config`
---
-ALTER TABLE `jj_config`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `jj_file`
---
-ALTER TABLE `jj_file`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `jj_member`
---
-ALTER TABLE `jj_member`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `UQ_email` (`email`);
-
---
--- Indexes for table `jj_menu`
---
-ALTER TABLE `jj_menu`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `parent` (`parent`);
-
---
--- Indexes for table `jj_migration`
---
-ALTER TABLE `jj_migration`
-  ADD PRIMARY KEY (`version`);
-
---
--- Indexes for table `jj_model`
---
-ALTER TABLE `jj_model`
-  ADD PRIMARY KEY (`id`);
-
---
--- 在导出的表使用AUTO_INCREMENT
+-- 表的结构 `jj_user`
 --
 
+CREATE TABLE IF NOT EXISTS `jj_user` (
+  `id` bigint(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT '用户id',
+  `username` varchar(32) NOT NULL COMMENT '用户名',
+  `password` varchar(64) NOT NULL COMMENT '密码',
+  `auth_key` varchar(64) NOT NULL,
+  `access_token` varchar(64) NOT NULL,
+  `email` varchar(32) NOT NULL COMMENT '邮箱',
+  `face` bigint(20) UNSIGNED NOT NULL DEFAULT '0' COMMENT '头像id',
+  `last_login_ip` varchar(32) NOT NULL COMMENT '最后登录ip',
+  `last_login_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '最后登录时间',
+  `created_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '注册时间',
+  `updated_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
+  `status` tinyint(3) UNSIGNED NOT NULL DEFAULT '10' COMMENT '状态',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `auth_key` (`auth_key`),
+  UNIQUE KEY `access_token` (`access_token`),
+  KEY `name_ind` (`username`),
+  KEY `email_ind` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 --
--- 使用表AUTO_INCREMENT `jj_attribute`
+-- 转存表中的数据 `jj_user`
 --
-ALTER TABLE `jj_attribute`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
---
--- 使用表AUTO_INCREMENT `jj_config`
---
-ALTER TABLE `jj_config`
-  MODIFY `id` smallint(5) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
---
--- 使用表AUTO_INCREMENT `jj_member`
---
-ALTER TABLE `jj_member`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
---
--- 使用表AUTO_INCREMENT `jj_menu`
---
-ALTER TABLE `jj_menu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
---
--- 使用表AUTO_INCREMENT `jj_model`
---
-ALTER TABLE `jj_model`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+INSERT INTO `jj_user` (`id`, `username`, `password`, `auth_key`, `access_token`, `email`, `face`, `last_login_ip`, `last_login_time`, `created_time`, `updated_time`, `status`) VALUES
+(7433940979680, 'jjcms', '$2y$13$.rtHGZfUXYe/7MuXr8OmWOo.TOWTWWPdTL0GKp7m8XtYK/x54UGQC', 'a3N39ofOVVQYroyhp70xosFd9e_3KZdZ', '2ztU6lRkGP2T6OWL0BnY0gnQq-g8btc5', '598571948@qq.com', 0, '127.0.0.1', 1494236059, 1494233298, 1494236059, 10);
+
 --
 -- 限制导出的表
 --

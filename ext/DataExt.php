@@ -33,11 +33,23 @@ class DataExt{
             $params['cacheName'] = $model::className().$params['userId'];
         }
 
+        if( !isset($params['andWhere']) ){
+            $params['andWhere'] = [];
+        }
+
         $cache  = Yii::$app->cache;
         $expire = Yii::$app->params['defaultCacheExpire'] ? Yii::$app->params['defaultCacheExpire'] : 300;
 
         if( $fresh || $cache->get($params['cacheName']) == false ){
-            $data  =  $model::find()->where($params['where'])->indexBy($params['pk'])->asArray()->all();
+            if( $params['andWhere'] ){
+                $query = $model::find()->where($params['where']);
+                foreach( $params['andWhere'] as $andwhere){
+                    $query->andWhere($andwhere);
+                }
+                $data  =  $query->indexBy($params['pk'])->asArray()->all();
+            }else{
+                $data  =  $model::find()->where($params['where'])->indexBy($params['pk'])->asArray()->all();
+            }
             $cache->set($params['cacheName'],Json::encode($data),$expire);
         }else{
             $data  = Json::decode($cache->get($params['cacheName']));

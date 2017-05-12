@@ -12,27 +12,19 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'web_name')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'web_alias')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'web_describe')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'groups')->dropDownList($group) ?>
 
-    <?= $form->field($model, 'web_keyword')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'value')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'web_record')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'remark')->textarea(['rows' => 5]) ?>
 
-    <?= $form->field($model, 'web_email')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'sort')->input('number') ?>
 
-    <?= $form->field($model, 'admin_is_allow_register')->dropDownList($regis_array) ?>
-
-    <?= $form->field($model, 'app_is_allow_register')->dropDownList($regis_array) ?>
-
-    <?= $form->field($model, 'default_rows')->input('number') ?>
-
-    <?= $form->field($model, 'default_cache_expire')->input('number') ?>
-
-    <?= $form->field($model, 'is_show_help')->dropDownList($regis_array) ?>
+    <?= $form->field($model, 'status')->dropDownList($status) ?>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? '新增' : '更新', ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>

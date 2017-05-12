@@ -8,6 +8,6 @@ class CommendController extends BasicController
     public function init()
     {
         parent::init();
-        \Yii::$app->setHomeUrl('index');
+        \Yii::$app->setHomeUrl('/site/index');
     }
 }

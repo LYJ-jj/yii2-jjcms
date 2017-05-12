@@ -9,7 +9,7 @@ class SignalID
 {
     const EPOCH = 1479533469598;
     const max12bit = 4095;
-    const max41bit = 1099511627775;
+    const max41bit = 2199023255552;
 
     static $machineId = null;
 

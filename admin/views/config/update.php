@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model app\admin\models\Config */
 
-$this->title = '编辑配置: ' . $model->web_name;
+$this->title = '编辑配置: ' . $model->title;
 $this->params['breadcrumbs'][] = ['label' => 'Configs', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->id, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = '编辑';
@@ -16,7 +16,9 @@ $this->params['breadcrumbs'][] = '编辑';
 
     <?= $this->render('_form', [
         'model' => $model,
-        'regis_array' => $regis_array
+        'status' =>$status,
+        'regis_array' => $regis_array,
+        'group' => $group
     ]) ?>
 
 </div>

@@ -2,6 +2,7 @@
 
 namespace app\admin\controllers;
 
+use app\admin\models\ConfigSearch;
 use Yii;
 use app\admin\models\Config;
 use yii\data\ActiveDataProvider;
@@ -14,6 +15,17 @@ use yii\filters\VerbFilter;
  */
 class ConfigController extends CommonController
 {
+    public static $group = [
+        '0' => '不分组',
+        '1' => '基本',
+        '2' => '内容',
+        '3' => '邮箱',
+        '4' => '系统',
+        '5' => '用户',
+        '6' => '短信',
+        '7' => '支付'
+    ];
+
     /**
      * @inheritdoc
      */
@@ -35,12 +47,13 @@ class ConfigController extends CommonController
      */
     public function actionIndex()
     {
-        $dataProvider = new ActiveDataProvider([
-            'query' => Config::find(),
-        ]);
-
+        $searchModel  = new ConfigSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+//        print_r($dataProvider);exit;
         return $this->render('index', [
+            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'gp_filter'  => self::$group
         ]);
     }
 
@@ -65,15 +78,14 @@ class ConfigController extends CommonController
     {
         $model = new Config();
 
-        if (Yii::$app->request->isPost) {
-            $post = $this->requestParams();
-            Config::deleteAll(['>','id',0]);
-            $model->load($post) && $model->save();
+        if ( $model->load($this->requestParams()) && $model->save() ) {
             return $this->redirect(['index']);
         } else {
             return $this->render('create', [
                 'model' => $model,
-                'regis_array'  => parent::$default_status_array2
+                'status'=> parent::$default_status_array,
+                'regis_array'  => parent::$default_status_array2,
+                'group'        => self::$group
             ]);
         }
     }
@@ -93,7 +105,9 @@ class ConfigController extends CommonController
         } else {
             return $this->render('update', [
                 'model' => $model,
-                'regis_array'  => parent::$default_status_array2
+                'status'=> parent::$default_status_array,
+                'regis_array'  => parent::$default_status_array2,
+                'group'        => self::$group
             ]);
         }
     }
