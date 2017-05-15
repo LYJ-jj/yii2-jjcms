@@ -47,7 +47,7 @@ git clone https://github.com/LYJ-jj/yii2-jjcms.git
 ###2.更新并下载composer.json文件
 
 ~~~
-php composer.phar update
+php composer.phar install
 ~~~
 
 !!! 如果您的电脑尚未安装composer，请前往官网下载并安装使用。
@@ -56,7 +56,6 @@ composer官网： http://docs.phpcomposer.com/
 
 ###3.使用bower下载bower.json中所注明的相关插件
 
-###(此步骤建议执行，跳过亦可,暂不影响使用)
 !!! 如果您还没有安装bower，请前往官网进行下载安装。
 
 bower官网：https://bower.io/
