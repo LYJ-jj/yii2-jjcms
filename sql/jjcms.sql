@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Generation Time: 2017-05-12 17:21:39
+-- Generation Time: 2017-05-17 10:14:09
 -- 服务器版本： 5.6.26-log
 -- PHP Version: 5.6.23
 
@@ -251,7 +251,7 @@ CREATE TABLE IF NOT EXISTS `jj_config` (
   `updated_time` int(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT '更新时间',
   `status` char(1) NOT NULL DEFAULT '1' COMMENT '状态(0-停用1-启用)',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8;
 
 --
 -- 转存表中的数据 `jj_config`
@@ -267,7 +267,8 @@ INSERT INTO `jj_config` (`id`, `name`, `title`, `groups`, `value`, `remark`, `so
 (7, 'admin_is_allow_register', '后台是否允许注册', '4', '1', '', 40, 1494573589, 1494573589, '1'),
 (8, 'app_is_allow+register', '前台是否允许注册', '4', '1', '', 45, 1494573635, 1494573635, '1'),
 (9, 'default_rows', '默认显示行数', '2', '10', '', 50, 1494573668, 1494573668, '1'),
-(10, 'default_cache_expire', '默认缓存失效时间', '4', '120', '', 55, 1494573706, 1494573706, '1');
+(10, 'default_cache_expire', '默认缓存失效时间', '4', '120', '', 55, 1494573706, 1494573706, '1'),
+(11, 'api_rate_limit', 'api接口请求频率设置', '4', '100-600', '请求次数-时间范围，ex; 600秒内最多100次的请求。  100-600', 60, 1494923327, 1494924235, '1');
 
 -- --------------------------------------------------------
 
@@ -430,7 +431,7 @@ CREATE TABLE IF NOT EXISTS `jj_user` (
 --
 
 INSERT INTO `jj_user` (`id`, `username`, `password`, `auth_key`, `access_token`, `email`, `face`, `last_login_ip`, `last_login_time`, `created_time`, `updated_time`, `status`) VALUES
-(7433940979680, 'jjcms', '$2y$13$.rtHGZfUXYe/7MuXr8OmWOo.TOWTWWPdTL0GKp7m8XtYK/x54UGQC', 'a3N39ofOVVQYroyhp70xosFd9e_3KZdZ', '2ztU6lRkGP2T6OWL0BnY0gnQq-g8btc5', '598571948@qq.com', 0, '127.0.0.1', 1494236059, 1494233298, 1494236059, 10);
+(7433940979680, 'jjcms', '$2y$13$.rtHGZfUXYe/7MuXr8OmWOo.TOWTWWPdTL0GKp7m8XtYK/x54UGQC', 'a3N39ofOVVQYroyhp70xosFd9e_3KZdZ', 'vhMNCx_sADW8EBCz0zIr4sCrUhAJhPBa', '598571948@qq.com', 0, '127.0.0.1', 1494931032, 1494233298, 1494986525, 10);
 
 --
 -- 限制导出的表

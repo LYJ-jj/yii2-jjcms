@@ -99,6 +99,10 @@ $config = [
             'defaultRoute'      => 'site/index',
             'layout'            => 'main.php',
         ],
+        'api' => [
+            'class'         => 'app\api\api',
+            'defaultRoute'  => 'config/index'
+        ]
     ],
 ];
 

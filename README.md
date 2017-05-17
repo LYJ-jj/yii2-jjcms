@@ -10,6 +10,7 @@
 5.数据表管理
 6.网站配置
 7.系统常规信息
+8.restful api
 
 目录结构
 -------------------
@@ -39,36 +40,36 @@
 安装使用方法
 ------------
 
-###1.使用git克隆或下载源码
+<h5> 1.使用git克隆或下载源码 </h5>
 
 ~~~
 git clone https://github.com/LYJ-jj/yii2-jjcms.git
 ~~~
-###2.更新并下载composer.json文件
+<h5> 2.更新并下载composer.json文件 </h5>
 
 ~~~
 php composer.phar install
 ~~~
 
-!!! 如果您的电脑尚未安装composer，请前往官网下载并安装使用。
+* 如果您的电脑尚未安装composer，请前往官网下载并安装使用。
 
-composer官网： http://docs.phpcomposer.com/
+* composer官网： http://docs.phpcomposer.com/
 
-###3.使用bower下载bower.json中所注明的相关插件
+<h5> 3.使用bower下载bower.json中所注明的相关插件 </h5>
 
-!!! 如果您还没有安装bower，请前往官网进行下载安装。
+* 如果您还没有安装bower，请前往官网进行下载安装。
 
-bower官网：https://bower.io/
+* bower官网：https://bower.io/
 
 ~~~
 bower install
 ~~~
 
-###4.新建数据库及数据表(相关文件在sql文件夹中)。
+<h5> 4.新建数据库及数据表(相关文件在sql文件夹中)。</h5>
 
-###5.打开config/db.php，修改相关配置。
+<h5> 5.打开config/db.php，修改相关配置。</h5>
 
-###6.完成。
+<h5> 6.完成。</h5>
 
 开始访问
 -------------
@@ -79,6 +80,44 @@ bower install
 http://www.localhost.com/site/index(前台首页)
  
 http://www.localhost.com/admin/site/index(后台首页)
+
+Nginx虚拟主机配置
+-----------------
+~~~
+server
+{
+   listen 80;
+   server_name localhost;
+   index index.php index.html;
+   root /path;
+   location / {
+     if (!-e $request_filename) { 
+            rewrite ^(.*)$ /index.php last; 
+            break; 
+        }
+   }
+
+   location ~ .*\.(php|php5)?$
+    {
+        #fastcgi_pass  unix:/tmp/php-cgi.sock;
+        fastcgi_pass  127.0.0.1:9000;
+        fastcgi_index index.php;
+        include fastcgi.conf;
+    }
+    location ~ .*\.(gif|jpg|jpeg|png|bmp|swf)$
+    {
+        expires 30d;
+    }
+    location ~ .*\.(js|css)?$
+    {
+        expires 1h;
+    }
+
+   include /path/nginx.conf;
+}
+~~~
+
+
 
 Apache虚拟主机配置参数
 -------
@@ -107,10 +146,14 @@ Apache虚拟主机配置参数
 
 当前版本
 --------
-v1.0.2
+v1.0.3
 
 更新内容
 --------
+v1.0.3
+
+构建 RESTful Api
+
 v1.0.2
 
 重构配置管理模块，编写说明文档

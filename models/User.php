@@ -2,15 +2,22 @@
 
 namespace app\models;
 
+use app\admin\models\Config;
 use Yii;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use yii\filters\RateLimitInterface;
 
-class User extends ActiveRecord implements \yii\web\IdentityInterface
+class User extends ActiveRecord implements \yii\web\IdentityInterface,RateLimitInterface
 {
     const STATUS_DELETED = 0;
     const STATUS_ACTIVE = 10;
+
+    public $rateLimit = 100;
+    public $timeLimit = 600;
+    public $allowance;
+    public $allowance_updated_at;
 
     public static function tableName()
     {
@@ -94,5 +101,31 @@ class User extends ActiveRecord implements \yii\web\IdentityInterface
         $this->access_token = Yii::$app->security->generateRandomString();
     }
 
+    public function getAccessToken()
+    {
+        return $this->access_token;
+    }
 
+    public function getRateLimit($request, $action)
+    {
+        $config = Config::getConfig(false);
+        $rate_array = isset($config['api_rate_limit']) && strpos($config['api_rate_limit'],'-') ? explode('-',$config['api_rate_limit']) : null;
+        if( $rate_array !== null ){
+            return [$rate_array[0],$rate_array[1]];
+        }
+
+        return [$this->rateLimit,$this->timeLimit];
+    }
+
+    public function loadAllowance($request, $action)
+    {
+        return [$this->allowance,$this->allowance_updated_at];
+    }
+
+    public function saveAllowance($request, $action, $allowance, $timestamp)
+    {
+        $this->allowance = $allowance;
+        $this->allowance_updated_at = $timestamp;
+        $this->save();
+    }
 }
