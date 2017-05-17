@@ -29,8 +29,10 @@ class LoginController extends Controller
     {
         $behaviors = parent::behaviors();
         $behaviors['contentNegotiator']['formats'] = ['application/json' => Response::FORMAT_JSON];
+
         return $behaviors;
     }
+
 
     protected function verbs()
     {
@@ -39,6 +41,7 @@ class LoginController extends Controller
             'logout' => ['POST']
         ];
     }
+
 
     public function actionLogin()
     {
@@ -64,6 +67,8 @@ class LoginController extends Controller
 
     public function actionLogout()
     {
-
+        Yii::$app->user->logout();
+        $this->successReturn['message'] = '退出成功';
+        return $this->successReturn;
     }
 }

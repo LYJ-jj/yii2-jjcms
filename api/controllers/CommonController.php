@@ -24,4 +24,24 @@ class CommonController extends ActiveController
        return $behaviors;
    }
 
+   public function success($data)
+   {
+       $data = [
+           'code'   => 1,
+           'info'   => $data
+       ];
+
+       return $data;
+   }
+
+   public function error($data)
+   {
+       $data = [
+           'code' => 0,
+           'info' => $data
+       ];
+
+       return $data;
+   }
+
 }

@@ -8,6 +8,13 @@ $config = [
     'bootstrap' => ['log'],
     'language'=>'zh-CN',
     'components' => [
+# 在服务器中，配置好redis即可打开该配置代码
+//        'redis' => [
+//            'class' => 'yii\redis\Connection',
+//            'hostname' => '127.0.0.1',
+//            'port' => 6379,
+//            'database' => 0,
+//        ],
         'i18n' => [
             'translations' => [
                 '*' => [

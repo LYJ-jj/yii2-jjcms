@@ -82,6 +82,7 @@ $this->title = 'jjcms';
         admin/controller&nbsp;&nbsp;后台控制器
         admin/models    &nbsp;&nbsp;后台模型
         admin/view      &nbsp;&nbsp;后台视图文件
+    api/                    api模块
     assets/             &nbsp;&nbsp;静态资源管理文件夹
     commands/           &nbsp;&nbsp;yii2命令模式文件夹
     config/             &nbsp;&nbsp;配置文件

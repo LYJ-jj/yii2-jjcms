@@ -15,6 +15,7 @@
 目录结构
 -------------------
       admin/              后台访问模块
+      api/                api模块
       assets/             静态资源管理文件夹
       commands/           yii2命令模式文件夹
       config/             配置文件
