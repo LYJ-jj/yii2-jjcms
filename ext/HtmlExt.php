@@ -12,6 +12,10 @@ class HtmlExt extends Html
 {
     public static function a($text, $url = null, $options = [])
     {
+        if( \Yii::$app->admin->identity->username == 'root' ){
+            return parent::a($text, $url, $options);
+        }
+
         if( UrlExt::checkUrlRule($url) ){
             return parent::a($text, $url, $options);
         }

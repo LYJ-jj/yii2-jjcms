@@ -33,6 +33,10 @@ class CommonController extends BasicController
         $controller = $action->controller->id;
         $actionName = $action->id;
 
+        if( \Yii::$app->admin->identity->username == 'root' ){
+            return true;
+        }
+
         if( \Yii::$app->admin->can($controller.'/*') ){
             return true;
         }

@@ -72,6 +72,8 @@ bower install
 
 <h5> 6.完成。</h5>
 
+<h5>测试账号： root &nbsp; 密码：123456 </h5>
+
 开始访问
 -------------
 路由规程为：http://host.com/\<module>/\<controller>/\<action>

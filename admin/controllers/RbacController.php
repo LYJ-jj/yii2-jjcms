@@ -88,9 +88,12 @@ class RbacController extends CommonController
             foreach($controllers as $controller){
                 $content = file_get_contents($controller);                      #读取文件内容，正则匹配控制器名称及方法名称
                 preg_match('/class ([a-zA-Z]+)Controller/',$content,$match);
-                $cName = $match[1];
-                if( !in_array(strtolower($cName),\Yii::$app->params['rbac_exceptController']) ){
-                    $permissions[] = strtolower($cName . '/*');
+                if( $match[1] ){
+                    $cName = $match[1];
+                    if( !in_array(strtolower($cName),\Yii::$app->params['rbac_exceptController']) ){
+                        $cName = functions::formatString( $cName );
+                        $permissions[] = strtolower($cName . '/*');
+                    }
                 }
                 preg_match_all('/public function action([a-zA-Z_]+)/',$content,$matchs);
                 if( $matchs[1] ){

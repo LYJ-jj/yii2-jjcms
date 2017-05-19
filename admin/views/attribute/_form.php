@@ -19,7 +19,7 @@ use yii\widgets\ActiveForm;
 
     <?= $form->field($model, 'note')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'type')->dropDownList(['0'=>'请选择...','char'=>'单字符','string'=>'字符串','integer'=>'数字','float'=>'浮点数','text'=>'文本框'],['id'=>'type']) ?>
+    <?= $form->field($model, 'type')->dropDownList(['0'=>'请选择...','char'=>'单字符','string'=>'字符串','integer'=>'数字','longint' => '长整型','float'=>'浮点数','text'=>'文本框'],['id'=>'type']) ?>
 
     <?= $form->field($model, 'field')->textInput(['maxlength' => true,'id'=>'field']) ?>
 
@@ -54,18 +54,21 @@ use yii\widgets\ActiveForm;
                     field.val(txt);
                     break;
 
+                case 'longint':
+                    var txt = "BIGINT(20) UNSIGNED NOT NULL";
+
                 case 'char':
                     var txt = "CHAR(1) NOT NULL";
                     field.val(txt);
                     break;
 
                 case 'integer':
-                    var txt = "INT(10) NOT NULL";
+                    var txt = "INT(10) UNSIGNED NOT NULL";
                     field.val(txt);
                     break;
 
                 case 'float':
-                    var txt = "FLOAT NOT NULL";
+                    var txt = "FLOAT UNSIGNED NOT NULL";
                     field.val(txt);
                     break;
 

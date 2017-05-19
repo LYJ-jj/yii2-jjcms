@@ -31,14 +31,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <div class="form-group">
                     <label class="control-label col-lg-2">权限子节点</label>
-                    <div class="col-lg-10">
+                    <div class="col-lg-10 checks">
                         <?= Html::checkboxList('children',$children['permissions'],$permissions,['class' => 'checkbox']) ?>
                     </div>
                 </div>
 
                 <div class="m-top-md col-lg-offset-1">
                     <?= Html::submitButton('分配',['class' => 'btn btn-info']) ?>&nbsp;
-                    <?= Html::resetButton('重置',['class' => 'btn btn-warning']) ?>
+                    <?= Html::button('全选/清空',['class' => 'btn btn-warning','id' => 'btn_sel']) ?>
                 </div>
                 <?= Html::endForm(); ?>
             </div>
@@ -64,6 +64,18 @@ $this->params['breadcrumbs'][] = $this->title;
 }
 CSS;
 $this->registerCss($css);
+
+$js = <<<JS
+    $('#btn_sel').bind('click',function(){
+        var checks = $("div[class*='checks'] input");
+        for(var i = 0,len = checks.length; i<len;i++){
+            var item  = $(checks[i]);
+            var state = item.prop('checked');
+            item.prop('checked',!state);
+        }
+    });
+JS;
+$this->registerJs($js);
 ?>
 
 
