@@ -68,11 +68,9 @@ class Config extends ActiveRecord
     {
         $data  = [];
         if( $useCache ){
-            $lists = DataExt::getData(new self,[
-                'andWhere' => [
-                    ['status' => '1']
-                ]
-            ]);
+            $lists = self::getDb()->cache(function(){
+                return self::find()->where(['>','id',0])->andWhere(['status' => '1'])->orderBy('sort asc')->asArray()->all();
+            },3600);
         }else{
             $lists = self::find()->where(['>','id',0])->andWhere(['status' => '1'])->orderBy('sort asc')->asArray()->all();
         }
@@ -81,5 +79,6 @@ class Config extends ActiveRecord
             $data["{$item['name']}"] = $item['value'];
         }
         return $data;
+
     }
 }
